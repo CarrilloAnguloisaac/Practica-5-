@@ -1,0 +1,48 @@
+class Graph:
+    def __init__(self, vertices):
+        self.V = vertices
+        self.graph = []
+
+    def add_edge(self, u, v, w):
+        self.graph.append([u, v, w])
+
+    def kruskal(self):
+        self.graph = sorted(self.graph, key=lambda item: item[2])
+        parent = [i for i in range(self.V)]
+        minimum_spanning_tree = []
+
+        def find(subset, i):
+            if subset[i] != i:
+                subset[i] = find(subset, subset[i])
+            return subset[i]
+
+        def union(subset, x, y):
+            x_root = find(subset, x)
+            y_root = find(subset, y)
+            subset[x_root] = y_root
+
+        edge_count = 0
+        index = 0
+        while edge_count < self.V - 1:
+            u, v, w = self.graph[index]
+            index += 1
+            x = find(parent, u)
+            y = find(parent, v)
+            if x != y:
+                edge_count += 1
+                minimum_spanning_tree.append([u, v, w])
+                union(parent, x, y)
+
+        return minimum_spanning_tree
+
+# Ejemplo de uso
+g = Graph(4)
+g.add_edge(0, 1, 10)
+g.add_edge(0, 2, 6)
+g.add_edge(0, 3, 5)
+g.add_edge(1, 3, 15)
+g.add_edge(2, 3, 4)
+
+minimum_spanning_tree = g.kruskal()
+print("Árbol de Expansión Mínima (Kruskal):")
+print(minimum_spanning_tree)
